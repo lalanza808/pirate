@@ -56,17 +56,17 @@ $ apt-get install transmission-daemon transmission-cli
 $ iptables -A INPUT -p tcp --dport 9091 -j ACCEPT
 ```
 
-[pushbullet.py](https://github.com/randomchars/pushbullet.py) is needed for Pushbullet notifications.
+[pushbullet.py](https://github.com/randomchars/pushbullet.py) is needed for Pushbullet notifications. You also need transmissionrpc on the server side so it can clear completed torrents.
 
 ```
-$ pip install pushbullet.py
+$ pip install pushbullet.py transmissionrpc
 ```
 
 Put your PushBullet API key in api variable in the script and set a cron job to run thepirate-satellite.py every X minutes.
 
 Make sure the server running Transmission (if not localhost) is accepting traffic on TCP/9091 and RPC is enabled in the Transmission settings.json file. Set your whitelist to your LAN subnet. Read about configuring Transmission [here](https://trac.transmissionbt.com/wiki/EditConfigFiles).
 
-![img](transmissionrpc_config.png)
+![img](img/transmissionrpc_config.png)
 
 ### Usage
 
@@ -78,16 +78,24 @@ $ echo 'PATH=$PATH:~/bin' >> ~/.bashrc && source ~/.bashrc
 $ cp pirate/thepirate.py ~/bin/thepirate
 ```
 
-Then just run it
+Then just run it. Supplying no arguments gives you a prompt.
 
-```
-$ thepirate
-```
+![img](img/pirate1.png)
 
+Or supply a search string with the -s flag
+
+![img](img/pirate2.png)
+
+You could even just supply the URL
+
+![img](img/pirate3.png)
+
+Check your queue
+
+![img](img/pirate4.png)
 
 #### TODO
 
- * Refactor code; not a fan of the spaghetti code functions
  * Comment script better; for personal reasons. I hate being confused 6 months later
  * Pushbullet read/download new torrents
  * Add config file support

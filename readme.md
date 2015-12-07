@@ -94,6 +94,10 @@ Check your queue
 
 ![img](img/pirate4.png)
 
+Away from home? If you hooked up thepirate-satellite on a cron job, you can send a magnet link as a push. It will be picked up by the satellite script and added to your queue.
+
+![img](img/pirate5.png)
+
 #### TODO
 
  * Comment script better; for personal reasons. I hate being confused 6 months later

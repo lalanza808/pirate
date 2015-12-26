@@ -104,3 +104,4 @@ Away from home? If you hooked up thepirate-satellite on a cron job, you can send
  * Pushbullet read/download new torrents
  * Add config file support
  * Auto updater
+ * Daily tally of script info (downloads, bandwidth, uploads, etc)

@@ -35,11 +35,7 @@ tpb = "https://thepiratebay.se"
 
 # Torrent server IP; can be any machine running transmission-daemon 
 # with a firewall inbound allowed to TCP/9091 (transmissionrpc)
-rpcserver = ''
-
-if not rpcserver:
-	print "[!] Transmission server not set! Update the 'rpcserver' variable in the script"
-	exit(10)
+rpcserver = []
 
 # Squelch HTTPS insecure warnings
 requests.packages.urllib3.disable_warnings()
@@ -48,14 +44,11 @@ requests.packages.urllib3.disable_warnings()
 # Parsing and Arguments
 
 parser = argparse.ArgumentParser(description='Scrape The Pirate Bay for torrents.')
-
-parser.add_argument('--search', '-s', dest='arg_search_string', help='The string to search for on TPB', required=False)
-
+parser.add_argument('--query', '-q', dest='arg_search_string', help='The query string to search for on TPB', required=False)
 parser.add_argument('--top', '-t', dest='arg_take_top', action='store_true', help='Automatically grab the torrent with most seeds', required=False)
-
-parser.add_argument('--magnet', '-m', dest='arg_magnet_link', help='Direct link to magnet link or torrent file', required=False)
-
-parser.add_argument('--url', '-u', dest='arg_torrent_page', help='URL of the torrent file', required=False)
+parser.add_argument('--file', '-f', dest='arg_magnet_link', help='Direct link to magnet link or torrent file', required=False)
+parser.add_argument('--url', '-u', dest='arg_torrent_page', help='URL of the torrent on TPB', required=False)
+parser.add_argument('--server', '-s', dest='arg_server_host', help='IP/hostname of the Transmission server', required=False)
 
 args = parser.parse_args()
 
@@ -68,14 +61,19 @@ def Check_Transmission_Listener():
 	Checks to see if transmission-daemon is listening on rpcserver
 	and initiates the function to ask user for input
 	"""
+	if not rpcserver and not args.arg_server_host:
+		print "No Transmission server specified! Quitting!"
+		exit(9)
+	elif args.arg_server_host:
+		rpcserver.append(args.arg_server_host)
 	try:
-		transmissionrpc.Client(rpcserver, port=9091)
+		transmissionrpc.Client(rpcserver[0], port=9091)
 		Get_Search_URL()
 	except KeyboardInterrupt:
 		print "\n\nBye."
 		exit(1)
 	except transmissionrpc.error.TransmissionError:
-		print "[!] Transmission-daemon not listening on {}!".format(rpcserver)
+		print "[!] Transmission-daemon not listening on {}!".format(rpcserver[0])
 		exit(2)
 
 #2	
@@ -87,7 +85,7 @@ def Get_Search_URL():
 	"""
 	#If magnet link supplied, directly add to queue, exit script
 	if args.arg_magnet_link:
-		transmissionrpc.Client(rpcserver).add_torrent(args.arg_magnet_link)
+		transmissionrpc.Client(rpcserver[0]).add_torrent(args.arg_magnet_link)
 		exit(0)
 	#If URL supplied, skip to Download_Torrent_From_URL function
 	elif args.arg_torrent_page:
@@ -189,7 +187,7 @@ def Download_Torrent_From_URL(tpb_torrent_url):
 
 	tpb_magnet_link = tpb_magnet_links[0]
 	print "\n[+] Adding magnet link for torrent:\n\n{}".format(tpb_torrent_url)
-	transmissionrpc.Client(rpcserver).add_torrent(tpb_magnet_link)
+	transmissionrpc.Client(rpcserver[0]).add_torrent(tpb_magnet_link)
 	print "\n[.] Done!\n"
 	exit(0)	
 	

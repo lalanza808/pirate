@@ -25,17 +25,17 @@ import transmissionrpc
 ##################################################
 # Variables
 
+# Torrent server IP; can be any machine running transmission-daemon
+# with a firewall inbound allowed to TCP/9091 (transmissionrpc)
+rpcserver = []
+
 # Dictionaries/Arrays for storing search results
 tpb_search_results = {}
 tpb_torrent_links = []
 user_torrent_selection = ""
 
 # Current/working PirateBay URL
-tpb = "https://thepiratebay.se"
-
-# Torrent server IP; can be any machine running transmission-daemon 
-# with a firewall inbound allowed to TCP/9091 (transmissionrpc)
-rpcserver = []
+tpb = "https://thepiratebay.org"
 
 # Squelch HTTPS insecure warnings
 requests.packages.urllib3.disable_warnings()
@@ -76,7 +76,7 @@ def Check_Transmission_Listener():
 		print "[!] Transmission-daemon not listening on {}!".format(rpcserver[0])
 		exit(2)
 
-#2	
+#2
 def Get_Search_URL():
 	"""
 	Takes input string to search for on TPB.
@@ -102,7 +102,7 @@ def Get_Search_URL():
 	tpb_torrent_page_source = requests.get(tpb_search_url, verify=False).text #Use requests lib to fetch page source for bs4 parsing
 
 	Get_Torrent_Links(tpb_torrent_page_source) #Run Get_Torrent_Links function, passing page source for BS4 parsing
-	
+
 #3
 def Get_Torrent_Links(source):
 	"""
@@ -118,7 +118,7 @@ def Get_Torrent_Links(source):
 	for link in tpb_torrent_page_soup.find_all('a'): #Find all anchor elements in page source
 		if link.get('href').startswith('/torrent'): #Only get links with /torrent as they're valid torrent pages
 			tpb_torrent_links.append(link.get('href')) #Set the results to tpb_torrent_links array
-	
+
 	#If -t is supplied, bypass this section of code and go on to download the top torrent
 	if args.arg_take_top and tpb_torrent_links:
 		Download_Torrent_From_URL("{}/{}".format(tpb, tpb_torrent_links[0]))
@@ -138,7 +138,7 @@ def Get_Torrent_Links(source):
 			args.arg_search_string = ''
 			Get_Search_URL() #Loop back to script start
 
-#4	
+#4
 def Get_User_Selection():
 	"""
 	Asks for selection of torrent
@@ -158,20 +158,20 @@ def Get_User_Selection():
 		#Exit script
 		elif selection == 99:
 			print "\nBye.\n"
-			exit() 
+			exit()
 		#If valid number, move to next function to add to queue
-		elif selection in tpb_search_results: 
+		elif selection in tpb_search_results:
 			user_torrent_selection = tpb_search_results[selection] #Updates variable based on key provided above, matches it with tpb_search_results dict
 			Download_Torrent_From_URL("{}/{}".format(tpb, user_torrent_selection))
 		#If anything other than 98, 99, or valid key number entered, loop back to selection input
-		else: 
+		else:
 			print "\nNot a valid number"
 			Get_User_Selection()
 	#If number isn't used, loop back to selection input
 	except ValueError:
 		print "\nThat is not a digit."
 		Get_User_Selection()
-	
+
 #5
 def Download_Torrent_From_URL(tpb_torrent_url):
 	"""
@@ -189,7 +189,7 @@ def Download_Torrent_From_URL(tpb_torrent_url):
 	print "\n[+] Adding magnet link for torrent:\n\n{}".format(tpb_torrent_url)
 	transmissionrpc.Client(rpcserver[0]).add_torrent(tpb_magnet_link)
 	print "\n[.] Done!\n"
-	exit(0)	
-	
+	exit(0)
+
 if __name__ == "__main__":
 	Check_Transmission_Listener()

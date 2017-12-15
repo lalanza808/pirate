@@ -1,12 +1,17 @@
-# The Pirate
+# Swashbuckler
 
-#####Command line torrent downloader with [Pushbullet](https://pushbullet.com) notifications.
+### Command line [torrent](https://thepiratebay.org) downloader with [mobile](https://pushbullet.com) notifications.
 
-Add torrents to your Transmission download queue from anywhere, either via Pushbullet magnet link push or [remote procedure calls](https://trac.transmissionbt.com/wiki/rpc) direct to the machine.
+Search and add torrents to your Transmission download queue from anywhere in the world, either via Pushbullet magnet link (pull) or [remote procedure calls](https://trac.transmissionbt.com/wiki/rpc) (push) direct to the service.
 
--
+###
 
-Default behavior parses HTML pages on [ThePirateBay](https://thepiratebay.org) based on a search string provided, then passes the magnet link to a locally running Transmission-Daemon (localhost or same LAN).
+Default behavior of the ad-hoc script does the following:
+ - Checks the RPC service functionality using the `transmissionrpc` Python library.
+ - Accepts user search input at the prompt after the RPC check; can override prompts via cli arguments.
+ - Requests and parses HTML pages on [ThePirateBay](https://thepiratebay.org) based on a search string provided, locates magnet links.
+ - Torrent results are displayed to the user with a selection prompt; can override prompts via cli arguments.
+ - Magnet link for selection is pushed to running [Transmission-Daemon](https://transmissionbt.com/) service; can execute .
 
 Can also add direct HTML pages of the desired torrent with --url, and direct magnet links and torrent files with --file.
 

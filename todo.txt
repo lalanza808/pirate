@@ -1,0 +1,5 @@
+fix the function handoff...
+setup dockerfile
+command line instructions
+transmission config
+playbook for installing
